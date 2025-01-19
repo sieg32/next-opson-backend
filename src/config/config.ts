@@ -5,6 +5,7 @@ export default {
         APPNAME: "MyApp",
         PORT: process.env.PORT || 5000,
         MAIL_AUTH:process.env.MAIL_AUTH,
+        JWT_SECRET:process.env.JWT_SECRET,
         db: {
           DB_NAME:'nextopson',
           USER: process.env.DB_USER || 'nextUser',
