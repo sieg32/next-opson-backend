@@ -43,6 +43,7 @@ export class OtpService {
 
     try {
       const response = await axios.request(options);
+      console.log(response)
       if (!response.data) {
         throw new Error("EmailError");
       }
