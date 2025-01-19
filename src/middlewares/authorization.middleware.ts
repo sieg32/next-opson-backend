@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { AuthenticatedUser } from "../types/controllers/authenticatedRequest.type";
+import config from "../config/config";
 
-const JWT_SECRET = 'your_jwt_secret'; // Make sure to keep this secret safe
+const JWT_SECRET = config.JWT_SECRET; // Make sure to keep this secret safe
 
 const authorize = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   // Extract the token from the Authorization header
