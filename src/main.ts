@@ -5,6 +5,7 @@ import authenticationRouter from './routes/authentication.route'
 import projectRouter from './routes/project.route'
 import propertyRouter from './routes/property.route'
 import otpRouter from './routes/otp.route'
+import userRouter from './routes/user.route'
 
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(express.json())
 
 
 app.use("/api/v1/authentication", authenticationRouter );
+app.use('/api/v1/user', userRouter);
 app.use("/api/v1/otp", otpRouter );
 app.use("/api/v1/project", projectRouter);
 app.use("/api/v1/property", propertyRouter)
