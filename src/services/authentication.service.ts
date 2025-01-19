@@ -99,7 +99,7 @@ export async function registerService(
   export async function verifyUserService(user:AuthenticatedUser): Promise< User| boolean | Error> {
     try {
       // Fetch the user by email
-      const userData = await Users.findByPk(user.user_id);
+      const userData = await Users.findByPk(user.user_id, {attributes:['username', "email", "user_type", "user_id"]});
       
       if (!user) {
         throw new Error('UserNotFound');
@@ -112,14 +112,6 @@ export async function registerService(
         return false;
       }
   
-      // Compare the provided password with the hashed password in the database
-    
-      
-     
-      // Generate a JWT token if the credentials are valid
-      
-  
-      
     } catch (error) {
         
       // Return the error message if any issues arise during login
