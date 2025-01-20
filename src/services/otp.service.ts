@@ -53,7 +53,7 @@ export class OtpService {
 
       return true;
     } catch (error: any) {
-      logger.error(error);
+      console.error(error, error.response.data);
 
       // Handle specific error cases
       if (error.message === "EmailError") {

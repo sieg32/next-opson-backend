@@ -4,7 +4,16 @@ import { ValidationError } from 'sequelize';
 interface PropertyData {
   user_id: string;
   property_name: string;
-  property_type: string;
+  property_type:
+    | 'house/villa'
+    | 'apartment/flat'
+    | 'commercial'
+    | 'plot'
+    | 'land'
+    | 'farmhouse'
+    | 'flatmates'
+    | 'penthouse'
+    | 'builder-floor';
   type: 'rent' | 'sale' | 'lease';
   bhk?: number;
   description?: string;
@@ -15,44 +24,32 @@ interface PropertyData {
   listed_by?: 'owner' | 'broker' | 'agent';
   bathrooms?: number;
   property_age?: string;
-  city?: string;
-  rera?: string;
-  construction_status?: 'ready_to_move' | 'under_construction' | 'new';
+  furnished?: 'semi' | 'fully' | 'non';
+  preference?: 'boys' | 'girls' | 'family';
+  is_public?: boolean;
+  is_sold?: boolean;
+  parking?: boolean;
+  views?: number;
 }
 
 export class TextService {
   /**
-   * Validates and creates a new property in the database.
+   * Creates a new property in the database.
    * @param data - Object containing property data
    * @returns Promise containing the created property details
    */
   async createProperty(data: PropertyData): Promise<Property> {
     try {
       // Validate required fields
-      if (!data.user_id || !data.property_name || !data.property_type || !data.type) {
-        throw new Error('Missing required fields: user_id, property_name, property_type, or type.');
+      const requiredFields = ['user_id', 'property_name', 'property_type', 'type'];
+      for (const field of requiredFields) {
+        if (!data[field as keyof PropertyData]) {
+          throw new Error(`Missing required field: ${field}`);
+        }
       }
 
-      // Create the property in the database
-      const property = await Property.create({
-        user_id: data.user_id,
-        property_name: data.property_name,
-        property_type: data.property_type,
-        type: data.type,
-        bhk: data.bhk,
-        description: data.description,
-        price: data.price,
-        builtup_area: data.builtup_area,
-        carpet_area: data.carpet_area,
-        sale_type: data.sale_type,
-        listed_by: data.listed_by,
-        bathrooms: data.bathrooms,
-        property_age: data.property_age,
-        city: data.city,
-        rera: data.rera,
-        construction_status: data.construction_status,
-      });
-
+      // Create the property
+      const property = await Property.create(data);
       return property;
     } catch (error) {
       if (error instanceof ValidationError) {
@@ -62,57 +59,52 @@ export class TextService {
     }
   }
 
-
-
-
-  async updateProperty(
-    propertyId: string,
-    updates: Partial<PropertyData>
-  ): Promise<Property> {
+  /**
+   * Updates an existing property.
+   * @param propertyId - ID of the property to update
+   * @param updates - Partial property data for update
+   * @returns Promise containing the updated property details
+   */
+  async updateProperty(propertyId: string, updates: Partial<PropertyData>): Promise<Property> {
     try {
-      // Find the property to update
+      // Find the property by ID
       const property = await Property.findByPk(propertyId);
-
       if (!property) {
-        throw new Error(`NotFound`);
+        throw new Error('PropertyNotFound');
       }
 
       // Update the property
       await property.update(updates);
-
       return property;
-    } catch (error:Error) {
-      if(error.message === 'NotFound' ){
-        throw new Error('NotFound')
-      }else{
-        throw new Error(`error while updating property: ${error.message}`)
+    } catch (error) {
+      if (error.message === 'PropertyNotFound') {
+        throw new Error('Property not found');
       }
+      throw new Error(`Error updating property: ${error.message}`);
     }
   }
 
-
-
-  async deleteProperty(propertyId: string): Promise<{success:boolean, message: string }> {
+  /**
+   * Deletes an existing property.
+   * @param propertyId - ID of the property to delete
+   * @returns Promise containing success message
+   */
+  async deleteProperty(propertyId: string): Promise<{ success: boolean; message: string }> {
     try {
       // Find the property by ID
       const property = await Property.findByPk(propertyId);
-
       if (!property) {
-        throw new Error(`NotFound`);
+        throw new Error('PropertyNotFound');
       }
 
       // Delete the property
       await property.destroy();
-
-      return { success:true ,message: 'Property deleted successfully' };
+      return { success: true, message: 'Property deleted successfully' };
     } catch (error) {
-        if(error.message === 'NotFound'){
-
-            throw new Error(`NotFound`);
-        }else{
-            
-            throw new Error(`Error deleting property: ${error.message}`);
-        }
+      if (error.message === 'PropertyNotFound') {
+        throw new Error('Property not found');
+      }
+      throw new Error(`Error deleting property: ${error.message}`);
     }
   }
 }

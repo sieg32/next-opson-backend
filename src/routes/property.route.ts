@@ -10,9 +10,9 @@ const router = Router()
 router.get('/all', getAllProperties);
 
 router.post('/text', createProperty);
-router.patch('/text/:id', updateProperty);
+router.patch('/text/:propertyId', updateProperty);
 
-router.delete('/:id', deleteProperty);
+router.delete('/:propertyId', deleteProperty);
 
 
 

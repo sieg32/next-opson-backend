@@ -1,3 +1,4 @@
+import sequelize from '../../config/database';
 import {ImageProperty} from '../../models';
 import { MediaService } from "../media/media.service";
 export class ImageService {
@@ -13,36 +14,55 @@ export class ImageService {
     async uploadImages(
       propertyId: string,
       files: Express.Multer.File[],
-      metadata: { altText: string | null, sortOrder: number | null}[]
+      metadata: { altText: string | null; sortOrder: number | null }[]
     ): Promise<ImageProperty[]> {
       if (files.length !== metadata.length) {
         throw new Error('Files and metadata length mismatch');
       }
-  
-      const createdImages: ImageProperty[] = [];
-  
+    
+      const transaction = await sequelize.transaction(); // Start a transaction
+      const uploadedS3Keys: string[] = []; // To track successfully uploaded S3 keys
+    
       try {
+        const createdImages: ImageProperty[] = [];
+    
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
           const { altText, sortOrder } = metadata[i];
-  
+    
           // Upload the image to S3
           const { location, key } = await this.mediaService.uploadImageToS3(file);
-  
-          // Create the ImageProperty record with the exact S3 key
-          const image = await ImageProperty.create({
-            property_id: propertyId,
-            key, // Save the full key
-            url: location,
-            alt_text: altText,
-            sort_order: sortOrder,
-          });
-  
+          uploadedS3Keys.push(key); // Keep track of uploaded S3 keys
+    
+          // Create the ImageProperty record
+          const image = await ImageProperty.create(
+            {
+              property_id: propertyId,
+              key,
+              url: location,
+              alt_text: altText,
+              sort_order: sortOrder,
+            },
+            { transaction }
+          );
+    
           createdImages.push(image);
         }
-  
+    
+        await transaction.commit(); // Commit transaction
         return createdImages;
       } catch (error) {
+        await transaction.rollback(); // Rollback transaction on failure
+    
+        // Cleanup uploaded files from S3
+        for (const key of uploadedS3Keys) {
+          try {
+            await this.mediaService.deleteImageFromS3(key);
+          } catch (s3Error) {
+            console.error(`Failed to delete S3 object with key ${key}: ${s3Error.message}`);
+          }
+        }
+    
         throw new Error(`Failed to upload images: ${error.message}`);
       }
     }

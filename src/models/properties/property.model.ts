@@ -129,30 +129,46 @@ import User from '../users/user.model';
     })
     property_age?: string;
   
-    // Facing direction (Corner, Boundary, Middle)
+    
     @Column({
-      type: DataType.STRING,
+      type: DataType.ENUM('semi', 'fully', 'non'),
+      allowNull:true
     })
-    city?: string;
+    furnished?: string;
+
+    @Column({
+      type: DataType.ENUM('boys', 'girls', 'family'),
+      allowNull:true
+    })
+    preference?: string;
+
+
+    @Column({
+      type: DataType.BOOLEAN,
+      defaultValue:true
+    })
+    is_public?: boolean;
+
+
+    @Column({
+      type: DataType.BOOLEAN,
+      defaultValue:false
+    })
+    is_sold?: boolean;
+
+    @Column({
+      type: DataType.BOOLEAN,
+      allowNull:true,
+      defaultValue:false
+    })
+    parking?: boolean;
+
 
     
 
 
   
-    // Amenities (stored as JSON)
-  
-    // RERA status (On, Off)
-    @Column({
-      type: DataType.STRING,
-    })
-    rera?: string;
-  
-    // Construction status (Ready to Move, Under Construction, New)
-    @Column({
-      type: DataType.ENUM('ready_to_move', 'under_construction', 'new'),
-    })
-    construction_status?: 'ready_to_move' | 'under_construction' | 'new';
-    
+   
 
     @Default(0)
     @Column({

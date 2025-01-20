@@ -18,7 +18,7 @@ app.use("/api/v1/authentication", authenticationRouter );
 app.use('/api/v1/user', userRouter);
 app.use("/api/v1/otp", otpRouter );
 app.use("/api/v1/project", projectRouter);
-app.use("/api/v1/property", propertyRouter)
+app.use("/api/v1/properties", propertyRouter)
 
 
 const start =async ()=>{
