@@ -33,7 +33,7 @@ export class ImageService {
           // Upload the image to S3
           const { location, key } = await this.mediaService.uploadImageToS3(file);
           uploadedS3Keys.push(key); // Keep track of uploaded S3 keys
-    
+          console.log(propertyId, location, key)
           // Create the ImageProperty record
           const image = await ImageProperty.create(
             {
@@ -52,6 +52,7 @@ export class ImageService {
         await transaction.commit(); // Commit transaction
         return createdImages;
       } catch (error) {
+        console.log(error.message)
         await transaction.rollback(); // Rollback transaction on failure
     
         // Cleanup uploaded files from S3

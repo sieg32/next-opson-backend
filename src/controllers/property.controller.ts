@@ -116,7 +116,7 @@ export const createLocation = async (req: Request, res: Response): Promise<void>
 export const getLocationByPropertyId = async (req: Request, res: Response): Promise<void> => {
   try {
     const { propertyId } = req.params;
-    const location = await locationService.getLocationByPropertyId(propertyId);
+    const location = await locationService.getLocationsByPropertyId(propertyId);
 
     if (!location) {
       res.status(404).json({success:false,  error: `Location for property ID ${propertyId} not found.` });
@@ -177,8 +177,18 @@ export const uploadImages = async (req: Request, res: Response): Promise<void> =
         res.status(400).json({success:false, message: 'No files uploaded' });
         return;
       }
-  
-      const metadata = req.body.metadata;
+
+      
+      let metadata = req.body.metadata;
+      try {
+        metadata = JSON.parse(metadata); // Parse metadata from string to an array
+      } catch (error) {
+        res.status(400).json({ success: false, message: 'Invalid metadata format' });
+        return;
+      }
+
+
+
       if (!metadata || !Array.isArray(metadata) || metadata.length !== req.files.length) {
         res.status(400).json({success:false, message: 'Metadata is required and must match the number of files' });
         return;
