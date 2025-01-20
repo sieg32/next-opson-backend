@@ -217,11 +217,12 @@ export const uploadImages = async (req: Request, res: Response): Promise<void> =
    * Delete an image by its ID.
    */
 export const deleteImages = async (req: Request, res: Response): Promise<void> => {
+  
     try {
       const { imageIds } = req.body;
   
       if (!imageIds || !Array.isArray(imageIds) || imageIds.length === 0) {
-        res.status(400).json({ message: 'No image IDs provided' });
+        res.status(400).json({success:false, message: 'No image IDs provided' });
         return;
       }
   

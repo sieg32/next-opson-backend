@@ -12,7 +12,6 @@ router.get('/all', getAllProperties);
 router.post('/text', createProperty);
 router.patch('/text/:propertyId', updateProperty);
 
-router.delete('/:propertyId', deleteProperty);
 
 
 
@@ -29,6 +28,7 @@ router.post('/images', upload.array('images', 10), uploadImages);
 router.delete('/images', deleteImages)
 
 
+router.delete('/:propertyId', deleteProperty);
 
 
 export default router;
