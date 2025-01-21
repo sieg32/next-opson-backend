@@ -1,5 +1,6 @@
 import { Property } from '../../models';
 import { ValidationError } from 'sequelize';
+import { esQueue } from '../search/elastic.queue';
 
 interface PropertyData {
   user_id: string;
@@ -50,6 +51,8 @@ export class TextService {
 
       // Create the property
       const property = await Property.create(data);
+
+      await esQueue.add({action:'add', data: property})
       return property;
     } catch (error) {
       if (error instanceof ValidationError) {
@@ -75,6 +78,7 @@ export class TextService {
 
       // Update the property
       await property.update(updates);
+      await esQueue.add({action:'updateProperty', data:{propertyId, updates:property}});
       return property;
     } catch (error) {
       if (error.message === 'PropertyNotFound') {
@@ -98,6 +102,7 @@ export class TextService {
       }
 
       // Delete the property
+      await esQueue.add({action:'delete', data:{propertyId}});
       await property.destroy();
       return { success: true, message: 'Property deleted successfully' };
     } catch (error) {

@@ -1,4 +1,5 @@
 import {Location} from '../../models';
+import { esQueue } from '../search/elastic.queue';
 
 export class LocationService {
   /**
@@ -15,6 +16,7 @@ export class LocationService {
   }): Promise<Location> {
     try {
       const location = await Location.create(locationData);
+      await esQueue.add({action:'updateLocation', data:{propertyId:location.property_id, updates:location}})
       return location;
     } catch (error) {
       throw new Error(`Failed to create location: ${error.message}`);
@@ -44,6 +46,8 @@ export class LocationService {
       }
   
       await location.update(updateData);
+      await esQueue.add({action:'updateLocation', data:{propertyId:location.property_id, updates:location}})
+
       return location;
     } catch (error) {
       throw new Error(`Failed to update location: ${error.message}`);

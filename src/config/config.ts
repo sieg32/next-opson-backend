@@ -18,6 +18,10 @@ export default {
           AWS_REGION:process.env.AWS_REGION,
           AWS_S3_BUCKET_NAME:process.env.AWS_S3_BUCKET_NAME
         },
+        elastic:{
+          USER:process.env.ELASTIC_USER || 'elastic',
+          PASSWORD: process.env.ELASTIC_PASSWORD || "test"
+        },
         ENV_TYPE: process.env.ENV_TYPE || "developement"
 
       

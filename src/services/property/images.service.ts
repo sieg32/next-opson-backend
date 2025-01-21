@@ -1,6 +1,8 @@
 import sequelize from '../../config/database';
+import logger from '../../config/logger';
 import {ImageProperty} from '../../models';
 import { MediaService } from "../media/media.service";
+import { esQueue } from '../search/elastic.queue';
 export class ImageService {
     private mediaService: MediaService;
   
@@ -50,6 +52,7 @@ export class ImageService {
         }
     
         await transaction.commit(); // Commit transaction
+        await esQueue.add({action:'updateImages', data:{propertyId}})
         return createdImages;
       } catch (error) {
         console.log(error.message)
@@ -74,21 +77,35 @@ export class ImageService {
     async deleteImage(imageId: string): Promise<boolean> {
       try {
         const image = await ImageProperty.findByPk(imageId);
-  
         if (!image) {
           throw new Error(`Image with ID ${imageId} not found.`);
         }
+        const propertyId = image.property_id;
   
         // Use the exact S3 key for deletion
         await this.mediaService.deleteImageFromS3(image.key);
   
         // Remove the record from the database
         await image.destroy();
-  
+        await esQueue.add({action:'updateImages', data:{propertyId:propertyId}});
         return true;
       } catch (error) {
         throw new Error(`Failed to delete image: ${error.message}`);
       }
+    }
+
+    async getImagesByPropertyId(propertyId:string){
+      try {
+        const images =await ImageProperty.findAll({where:{property_id:propertyId}});
+        if(!images){
+          throw new Error('NotFound');
+        }
+        return images;
+      } catch (error) {
+        logger.error('images not found')
+        throw error;
+      }
+
     }
   }
   
