@@ -8,9 +8,12 @@ import otpRouter from './routes/otp.route'
 import userRouter from './routes/user.route'
 import searchRouter from './routes/search.route';
 import { ElasticInitialize } from './services/search/elastic.service';
+import cors from 'cors';
 
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json())
 
