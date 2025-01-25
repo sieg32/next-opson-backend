@@ -51,18 +51,33 @@ import User from '../users/user.model';
     @AllowNull(false)
     @Column({
       type: DataType.ENUM(
-        'house/villa',
-        'apartment/flat',
+        'house',
+        'flat',
         'commercial',
-        'plot',
-        'land',
-        'farmhouse',
+        'plot&land',
+        
+        
         'flatmates',
-        'penthouse',
-        'builder-floor'
+       
       ),
     })
     property_type!: string;
+
+
+    
+    @Column({
+      type: DataType.ENUM(
+        'office',
+        'retailshop',
+        'showroom',
+        'warehouse',
+        'restaurant',
+        'hospital',
+        'others'
+      ),
+      allowNull:true
+    })
+    project_type!: string;
   
     // Transaction type (Rent, Sale, Lease)
     @AllowNull(false)
@@ -75,6 +90,7 @@ import User from '../users/user.model';
     @AllowNull(true)
     @Column({
       type: DataType.INTEGER,
+      allowNull:true
     })
     bhk?: number;
   
@@ -93,21 +109,63 @@ import User from '../users/user.model';
       type: DataType.INTEGER,
     })
     price?: number;
+
+
+    @Column({
+      type: DataType.BOOLEAN,
+      
+      allowNull:true
+    })
+    is_negotiable?: boolean;
+
+    @Column({
+      type: DataType.BOOLEAN,
+      allowNull:true
+    })
+    is_independent?: boolean;
+    
+    @Column({
+      type: DataType.BOOLEAN,
+      allowNull:true
+    })
+    is_pet_friendly?: boolean;
+
+
+    @Column({
+      type: DataType.INTEGER,
+      allowNull:true
+    })
+    security_deposit?: number;
+
+    @Column({
+      type: DataType.INTEGER,
+      allowNull:true
+    })
+    maintenance_charge?: number;
+
   
     // Built-up area and Carpet area (in sq. ft.)
     @Column({
       type: DataType.INTEGER,
+      allowNull:true
     })
     builtup_area?: number;
   
     @Column({
       type: DataType.INTEGER,
+      allowNull:true
     })
     carpet_area?: number;
+
+    @Column({
+      type: DataType.INTEGER,
+    })
+    area?: number;
   
     // Sale type (New Projects, Resale Properties)
     @Column({
       type: DataType.ENUM('new', 'resale'),
+      allowNull:true
     })
     sale_type?: 'new' | 'resale';
   
@@ -120,12 +178,14 @@ import User from '../users/user.model';
     // Bathroom count
     @Column({
       type: DataType.INTEGER,
+      allowNull:true
     })
     bathrooms?: number;
   
     // Age of property
     @Column({
       type: DataType.STRING,
+      allowNull:true
     })
     property_age?: string;
   
@@ -162,6 +222,76 @@ import User from '../users/user.model';
       defaultValue:false
     })
     parking?: boolean;
+
+
+    @Column({
+      type: DataType.BOOLEAN,
+      allowNull:true,
+      defaultValue:false
+    })
+    boundary_wall?: boolean;
+
+    @Column({
+      type: DataType.INTEGER,
+      allowNull:true,
+      
+    })
+    cabins?: number;
+
+    @Column({
+      type: DataType.JSON,
+      allowNull:true,
+      
+    })
+    dimension?: {l:number, b:number};
+
+    @Column({
+      type: DataType.INTEGER,
+      allowNull:true,
+      
+    })
+    expected_rental?:number;
+
+    @Column({
+      type: DataType.INTEGER,
+      allowNull:true,
+      
+    })
+    expected_maintenance?:number;
+
+    @Column({
+      type: DataType.STRING,
+      allowNull:true,
+      
+    })
+    facing?:string;
+
+    @Column({
+      type: DataType.STRING,
+      allowNull:true,
+      
+    })
+    rera?:string;
+    @Column({
+      type: DataType.STRING,
+      allowNull:true,
+      
+    })
+    plot_side?:string;
+
+    @Column({
+      type: DataType.STRING,
+      allowNull:true,
+      
+    })
+    ownership?:string;
+
+    @Column({
+      type: DataType.STRING,
+      allowNull:true,
+      
+    })
+    open_side?:string;
 
 
     

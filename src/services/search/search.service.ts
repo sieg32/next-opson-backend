@@ -25,6 +25,11 @@ export class SearchService {
     furnished?: boolean;
     parking?: boolean;
     is_public?: boolean;
+    is_negotiable:boolean;
+    is_independent:boolean;
+    is_pet_friendly:boolean;
+    security_deposit:number;
+    maintenance_charge:number;
     sort?: string;
     searchRadius?: number;
     lat?: number;
@@ -44,11 +49,16 @@ export class SearchService {
       city,
       landmark,
       bathrooms,
-      builtup_area_min,
-      builtup_area_max,
+      area_min,
+      area_max,
       furnished,
       parking,
       is_public,
+      is_negotiable,
+      is_independent,
+      is_pet_friendly,
+      security_deposit,
+      maintenance_charge,
       
       sort,
       searchRadius = 1,
@@ -135,12 +145,12 @@ export class SearchService {
         });
       }
 
-      if (builtup_area_min || builtup_area_max) {
+      if (area_min || area_max) {
         esQuery.body.query.bool.must.push({
           range: {
             builtup_area: {
-              gte: builtup_area_min || 0,
-              lte: builtup_area_max || 999999999,
+              gte: area_min || 0,
+              lte: area_max || 999999999,
             },
           },
         });
@@ -173,7 +183,7 @@ export class SearchService {
           esQuery.body.sort.push({ views: { order: 'desc' } });
           break;
         default:
-          esQuery.body.sort.push({ createdAt: { order: 'desc' } });
+          esQuery.body.sort.push({ _score: { order: 'desc' } });
           break;
       }
 

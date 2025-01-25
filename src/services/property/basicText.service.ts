@@ -19,6 +19,11 @@ interface PropertyData {
   bhk?: number;
   description?: string;
   price?: number;
+  is_negotiable:boolean;
+  is_independent:boolean;
+  is_pet_friendly:boolean;
+  security_deposit:number;
+  maintenance_charge:number;
   builtup_area?: number;
   carpet_area?: number;
   sale_type?: 'new' | 'resale';
@@ -42,7 +47,7 @@ export class TextService {
   async createProperty(data: PropertyData): Promise<Property> {
     try {
       // Validate required fields
-      const requiredFields = ['user_id', 'property_name', 'property_type', 'type'];
+      const requiredFields = ['user_id', 'property_name', 'property_type', 'type', 'price', 'area', 'listed_by'];
       for (const field of requiredFields) {
         if (!data[field as keyof PropertyData]) {
           throw new Error(`Missing required field: ${field}`);
