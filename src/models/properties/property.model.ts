@@ -54,10 +54,8 @@ import User from '../users/user.model';
         'house',
         'flat',
         'commercial',
-        'plot&land',
-        
-        
-        'flatmates',
+        'plot&Land',
+        'flatmate',
        
       ),
     })
@@ -292,6 +290,13 @@ import User from '../users/user.model';
       
     })
     open_side?:string;
+
+    @Column({
+      type: DataType.ARRAY(DataType.STRING),
+      allowNull:true,
+      
+    })
+    amenities?:string[];
 
 
     
