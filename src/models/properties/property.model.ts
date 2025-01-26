@@ -292,6 +292,13 @@ import User from '../users/user.model';
     open_side?:string;
 
     @Column({
+      type: DataType.INTEGER,
+      allowNull:true,
+      
+    })
+    ground_to_ceiling?:number;
+
+    @Column({
       type: DataType.ARRAY(DataType.STRING),
       allowNull:true,
       

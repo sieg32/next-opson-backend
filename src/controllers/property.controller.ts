@@ -20,8 +20,13 @@ export const createProperty= async(req: Request, res: Response): Promise<void> =
     try {
       const data = req.body;
 
+      const cleanedData = Object.entries(data).reduce((acc, [key, value]) => {
+        acc[key] = value === "" ? null : value;
+        return acc;
+      }, {} as Record<string, any>);
+
       // Call the service to create the property
-      const property = await textService.createProperty(data);
+      const property = await textService.createProperty(cleanedData);
 
       // Respond with the created property data
       res.status(201).json({
@@ -42,8 +47,12 @@ export const updateProperty = async (req: Request, res: Response): Promise<void>
       const { propertyId } = req.params;
       const updates = req.body;
 
+      const cleanedData = Object.entries(updates).reduce((acc, [key, value]) => {
+        acc[key] = value === "" ? null : value;
+        return acc;
+      }, {} as Record<string, any>);
       // Call the service to update the property
-      const updatedProperty = await textService.updateProperty(propertyId, updates);
+      const updatedProperty = await textService.updateProperty(propertyId, cleanedData);
 
       // Respond with the updated property data
       res.status(200).json({

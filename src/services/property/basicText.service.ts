@@ -55,11 +55,13 @@ export class TextService {
       }
 
       // Create the property
+      console.log(data);
       const property = await Property.create(data);
 
       await esQueue.add({action:'add', data: property})
       return property;
     } catch (error) {
+      console.log(error)
       if (error instanceof ValidationError) {
         throw new Error(`Validation Error: ${error.message}`);
       }
