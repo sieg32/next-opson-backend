@@ -3,10 +3,12 @@ import { Property, Location, ImageProperty } from '../models';
 import { TextService } from '../services/property/basicText.service';
 import { LocationService } from '../services/property/location.service';
 import { ImageService } from '../services/property/images.service';
+import { DeletionService } from '../services/property/deletion.service';
 
 const textService = new TextService();
 const locationService = new LocationService();
 const imageService = new ImageService();
+const deletionService = new DeletionService()
 
 export const  getAllProperties= async (req:Request, res:Response)=>{
 
@@ -77,7 +79,7 @@ export const updateProperty = async (req: Request, res: Response): Promise<void>
       const { propertyId } = req.params;
 
       // Call the service to delete the property
-      const result = await textService.deleteProperty(propertyId);
+      const result = await deletionService.deleteProperty(propertyId);
 
       // Respond with success message
       res.status(200).json({success:true, message:'property successfully deleted'});

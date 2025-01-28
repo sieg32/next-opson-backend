@@ -107,5 +107,32 @@ export class ImageService {
       }
 
     }
+
+
+    public async deleteImages(imageKeys: string[]): Promise<{ deletedKeys: string[]; errors: string[] }> {
+      const deletedKeys: string[] = [];
+      const errors: string[] = [];
+  
+      // Iterate over the array of image keys to delete them individually
+      await Promise.all(
+        imageKeys.map(async (key) => {
+          try {
+            // Delete the image from S3
+            await this.mediaService.deleteImageFromS3(key);
+            // Remove the image metadata from the database
+            const deletedRecord = await ImageProperty.destroy({ where: {  key } });
+  
+            if (deletedRecord > 0) {
+              deletedKeys.push(key);
+            } else {
+              errors.push(`No database record found for key: ${key}`);
+            }
+          } catch (error) {
+            errors.push(`Failed to delete key: ${key}. Error: ${error.message}`);
+          }
+        })
+      );
+      return { deletedKeys, errors };
+    }
   }
   
