@@ -223,6 +223,7 @@ export class SearchService {
     area_max?: number;
     furnished?: boolean;
     parking?: boolean;
+    listed_by?: string;
     is_public?: boolean;
     is_negotiable?: boolean;
     is_independent?: boolean;
@@ -258,6 +259,7 @@ export class SearchService {
       area_max,
       furnished,
       parking,
+      listed_by,
       is_public,
       is_negotiable,
       is_independent,
@@ -324,6 +326,7 @@ export class SearchService {
         bathrooms,
         furnished,
         parking,
+        listed_by,
         is_public,
         is_negotiable,
         is_independent,
@@ -331,7 +334,7 @@ export class SearchService {
       };
 
       for (const [field, value] of Object.entries(exactMatchFields)) {
-       
+        
         if (value !== undefined ) {
           esQuery.body.query.bool.filter.push({ term: { [field]: value } });
         }
