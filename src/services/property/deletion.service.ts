@@ -14,7 +14,7 @@ const imageService = new ImageService();
 
 
 export class DeletionService {
-  public async deleteProperty(propertyId: string): Promise<void> {
+  public async deleteProperty(propertyId: string): Promise<Boolean> {
     const property = await Property.findByPk(propertyId, {
       include: [{model:ImageProperty ,as:'images'}, Location],
     });
@@ -45,6 +45,7 @@ export class DeletionService {
       await esQueue.add({action:'delete', data:{propertyId}});
       // Delete the project
       await property.destroy();
+      return true;
     } catch (error) {
       logger.error("Error while deleting project:", error.message);
       throw new Error("DeletionFailed");

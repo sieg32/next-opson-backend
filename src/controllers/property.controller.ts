@@ -91,7 +91,7 @@ export const updateProperty = async (req: Request, res: Response): Promise<void>
         }else{
             
             
-            res.status(400).json({ error: error.message });
+            res.status(500).json({success:false, error: error.message });
         }
     }
   }

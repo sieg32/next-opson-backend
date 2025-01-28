@@ -277,6 +277,8 @@ export class SearchService {
       page = 1,
       pageSize = 30,
     } = params;
+    
+  
 
     try {
       // Build base Elasticsearch query
@@ -329,7 +331,8 @@ export class SearchService {
       };
 
       for (const [field, value] of Object.entries(exactMatchFields)) {
-        if (value !== undefined) {
+       
+        if (value !== undefined ) {
           esQuery.body.query.bool.filter.push({ term: { [field]: value } });
         }
       }
