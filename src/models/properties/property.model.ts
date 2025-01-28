@@ -71,6 +71,9 @@ import User from '../users/user.model';
         'warehouse',
         'restaurant',
         'hospital',
+        'plot',
+        'land',
+        'farmhouse',
         'others'
       ),
       allowNull:true

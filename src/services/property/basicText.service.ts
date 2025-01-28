@@ -1,6 +1,7 @@
 import { Property } from '../../models';
 import { ValidationError } from 'sequelize';
 import { esQueue } from '../search/elastic.queue';
+import logger from '../../config/logger';
 
 interface PropertyData {
   user_id: string;
@@ -55,13 +56,13 @@ export class TextService {
       }
 
       // Create the property
-      console.log(data);
+      
       const property = await Property.create(data);
 
       await esQueue.add({action:'add', data: property})
       return property;
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       if (error instanceof ValidationError) {
         throw new Error(`Validation Error: ${error.message}`);
       }
