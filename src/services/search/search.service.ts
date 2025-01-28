@@ -278,7 +278,7 @@ export class SearchService {
       pageSize = 30,
     } = params;
     
-  
+    
 
     try {
       // Build base Elasticsearch query
