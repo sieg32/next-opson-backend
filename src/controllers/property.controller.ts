@@ -4,6 +4,7 @@ import { TextService } from '../services/property/basicText.service';
 import { LocationService } from '../services/property/location.service';
 import { ImageService } from '../services/property/images.service';
 import { DeletionService } from '../services/property/deletion.service';
+import { esQueue } from '../services/search/elastic.queue';
 
 const textService = new TextService();
 const locationService = new LocationService();
@@ -15,6 +16,31 @@ export const  getAllProperties= async (req:Request, res:Response)=>{
     const data = await Property.findAll({include:[Location, {model:ImageProperty , as:'images'}]});
 
     res.status(200).json({message:'success', success:true, data:data})
+}
+
+export const  getPropertyById= async (req:Request, res:Response)=>{
+    const {propertyId} = req.params;
+    try {
+      const data = await Property.findByPk(propertyId ,{include:[Location, {model:ImageProperty , as:'images'}]});
+      if(!data){
+        res.status(404).json({success:false, message:'property not found '})
+        return;
+      }
+
+      data.views = data.views + 1;
+
+      await data.save()
+
+      await esQueue.add({action:'updateProperty', data:{propertyId, updates:{views:data.views}}});
+
+
+
+      res.status(200).json({success:true, message:'success', data:data})
+    } catch (error) {
+      res.status(500).json({success:false, message:'error while fetching '})
+    }
+
+    
 }
 
 

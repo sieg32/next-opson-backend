@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { createProperty, deleteImages, deleteProperty, getAllProperties, updateProperty, uploadImages } from '../controllers/property.controller';
+import { createProperty, deleteImages, deleteProperty, getAllProperties, getPropertyById, updateProperty, uploadImages } from '../controllers/property.controller';
 
 import {createLocation, getLocationByPropertyId, updateLocation, deleteLocation} from '../controllers/property.controller';
 import upload from '../middlewares/multer.middleware';
@@ -29,6 +29,7 @@ router.delete('/images', deleteImages)
 
 
 router.delete('/:propertyId', deleteProperty);
+router.get('/:propertyId',getPropertyById);
 
 
 export default router;

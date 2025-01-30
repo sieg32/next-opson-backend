@@ -118,3 +118,37 @@ export async function registerService(
        throw new Error(error.message);
     }
   }
+
+
+
+  export async function refreshTokenService(user:AuthenticatedUser): Promise< string | Error> {
+    try {
+      // Fetch the user by email
+      const userData = await Users.findByPk(user.user_id, {attributes:['username', "email", "user_type", "user_id"]});
+      
+      if (!userData) {
+        throw new Error('UserNotFound');
+        
+      }
+      
+      const token = jwt.sign(
+        {
+          user_id: userData.user_id,
+          email: userData.email,
+          user_type: userData.user_type,
+        },
+        JWT_SECRET,
+        {
+          expiresIn: '12h', // Token expires in 1 hour
+        }
+      );
+
+      return token;
+     
+  
+    } catch (error) {
+        
+      // Return the error message if any issues arise during login
+       throw new Error(error.message);
+    }
+  }

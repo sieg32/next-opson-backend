@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { loginService, registerService, verifyUserService } from "../services/authentication.service";
+import { loginService, refreshTokenService, registerService, verifyUserService } from "../services/authentication.service";
 import logger from "../config/logger";
 import { AuthenticatedRequest } from "../types/controllers/authenticatedRequest.type";
 
@@ -78,16 +78,15 @@ export const verifyToken =async (req:AuthenticatedRequest, res:Response)=>{
     
      }
 
-
-export const generateOtpController =async (req:Request, res:Response)=>{
+export const refreshToken =async (req:AuthenticatedRequest, res:Response)=>{
     try {
         
-
-        const userData =await verifyUserService(req.user);
-        if(userData){
-            res.status(200).json({success:true, message:'user verified', data:userData});
+        
+        const token =await refreshTokenService(req.user);
+        if(token){
+            res.status(200).json({success:true, message:'token refreshed', token});
         }else{
-            res.status(403).json({success:false, message:'user not verified'});
+            res.status(403).json({success:false, message:'error while verifying'});
         }
     } catch (error) {
         logger.error(error)
@@ -96,3 +95,5 @@ export const generateOtpController =async (req:Request, res:Response)=>{
     
     
      }
+
+
